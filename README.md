@@ -24,3 +24,37 @@ create table if not exists app_public.foo (
 
 
 clone this repo and install
+npm install
+npm run
+open the url 
+http://localhost:5000/graphiql
+run this graphql query
+
+subscription {
+  listen(topic: "hello") {
+    relatedNodeId
+    relatedNode {
+      nodeId
+      ... on Foo {
+        id
+        title
+      }
+    }
+  }
+}
+
+
+next run this postgres notify in dbeaver under the public schema
+select pg_notify(
+  'postgraphile:hello',
+  json_build_object(
+    '__node__', json_build_array(
+      'foos',
+      (select max(id) from app_public.foo)
+    )
+  )::text
+);
+
+
+You should see the nofifaction in the browser
+
