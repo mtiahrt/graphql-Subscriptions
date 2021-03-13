@@ -24,8 +24,7 @@ AS $function$
 begin
 	 perform pg_notify( 'postgraphile:fooInsertHappen',
   		json_build_object('__node__', 
-    		json_build_array('foos',(select max(id) 
-    								 from app_public.foo))
+    		json_build_array('foos',(select max(id) from app_public.foo))
   		)::text
 	);
 return NEW;
