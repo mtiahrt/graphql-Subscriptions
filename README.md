@@ -15,9 +15,9 @@ create table if not exists app_public.foo (
 );
 ```
 
-create this function in public
+create this function in private
 ```
-CREATE OR REPLACE FUNCTION app_public.notify_foo_insert()
+CREATE OR REPLACE FUNCTION app_private.notify_foo_insert()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$
@@ -26,11 +26,25 @@ begin
   		json_build_object('__node__', 
     		json_build_array('foos',(select max(id) from app_public.foo))
   		)::text
-	);
+	  );
 return NEW;
 END;
 $function$
 ;
+```
+
+create this function in private for canceling notifications.  I think...
+```
+CREATE OR REPLACE FUNCTION app_private.validate_subscription(topic text)
+ RETURNS text
+ LANGUAGE sql
+ STABLE
+AS $function$
+ select 'CANCEL_ALL_SUBSCRIPTIONS'::text;
+$function$
+;
+
+
 ```
 
 Next create this trigger in for the foo table
@@ -39,7 +53,7 @@ Next create this trigger in for the foo table
 create trigger foo_inserts after
 insert
     on
-    app_public.foo for each row execute function app_public.notify_foo_insert()
+    app_public.foo for each row execute function app_private.notify_foo_insert()
 ```
 
 
