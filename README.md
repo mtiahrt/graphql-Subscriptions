@@ -1,16 +1,18 @@
 # subs
+
 before runing this repo. create a db called subs in postgres
-create 2 schemas under this db.  app_public and app_private
+create 2 schemas under this db. app_public and app_private
 
 this repo is configured assuming the db user name is postgres and same for the password
 you will need to look up your ip to set the db url
 
 Create this table in public
+
 ```
 create table if not exists app_public.foo (
  id serial primary key,
- title text not null 
-); 
+ title text not null
+);
 ```
 
 create this function in public
@@ -48,6 +50,7 @@ npm run <br>
 open the url <br>
 http://localhost:5000/graphiql <br>
 run this graphql query
+
 ```
 subscription {
   listen(topic: "fooInsertHappen") {
@@ -62,7 +65,8 @@ subscription {
   }
 }
 ```
-you are not listening for a subscription
+
+you are now listening for a subscription
 
 next run this postgres insert in dbeaver under the public schema <br>
 ```
@@ -71,6 +75,4 @@ INSERT INTO app_public.foo
 VALUES('Brookie''s Topic');
 ```
 
-
 You should see the notification in the browser
-
